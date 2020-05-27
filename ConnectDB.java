@@ -13,27 +13,56 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author oculus_team_4
- */
-public class ConnectDB 
+public class ConnectDB
 {
     private static Connection con;
+    
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLUE = "\u001B[34m";
    
     void getConnection() throws ClassNotFoundException, SQLException
     {
         Class.forName("org.sqlite.JDBC");
-        con = DriverManager.getConnection("jdbc:sqlite:SE318.db");
-         System.out.println("Successfully Connected");    
+        con = DriverManager.getConnection("jdbc:sqlite:lib/SE318.db");
+        //JOptionPane.showMessageDialog(null, "Connection Established");   
     }
     
-    /**
-     *
-     * @param tablename
-     * @throws SQLException
-     * @throws ClassNotFoundException
-     */
+     public static Boolean Check_For_Password_Student(String Username,String Password) throws SQLException
+    {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("SELECT EXISTS(SELECT Username,Password FROM Student WHERE Username = '"+Username+"' AND Password = '"+Password+"');");
+            
+            while(rs.next())
+            {
+               return (rs.getBoolean(1));
+            }
+        return null;
+    }
+    
+     public static Boolean Check_For_Password_Teacher(String username,String password) throws SQLException
+    {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("SELECT EXISTS(SELECT username,password FROM Teacher WHERE username = '"+username+"' AND password = '"+password+"');");
+            
+            while(rs.next())
+            {
+               return (rs.getBoolean(1));
+            }
+        return null;
+    }
+ 
+  public static Boolean Check_For_Password_Admin(String Username,String Password) throws SQLException
+    {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("SELECT EXISTS(SELECT username,password FROM Admin WHERE username = '"+Username+"' AND password = '"+Password+"');");
+            
+            while(rs.next())
+            {
+               return (rs.getBoolean(1));
+            }
+        return null;
+    }
+    
     public void createtable(String tablename) throws SQLException, ClassNotFoundException
     {
         if(con == null)
@@ -46,8 +75,8 @@ public class ConnectDB
 "	\"ID\"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT\n" +
 ");");
         createdb.execute();
-        } catch (SQLException e) {
-                    
+        } catch (SQLException e) 
+    {  
            System.out.println(e);            
     }      
    }
@@ -58,7 +87,7 @@ public class ConnectDB
         ResultSet rs = s.executeQuery("select * from Teacher");
         
 while(rs.next())
-        System.out.println("ID: "+rs.getInt(1)+" Name: "+rs.getString(2)+" Username: "+rs.getString(3)+" Password: "+rs.getString(4)); 
+        System.out.println("ID: "+ANSI_BLUE+rs.getInt(1)+ANSI_RESET+" Name: "+ANSI_BLUE+rs.getString(2)+ANSI_RESET+" Username: "+ANSI_BLUE+rs.getString(3)+ANSI_RESET+" Password: "+ANSI_BLUE+rs.getString(4)+ANSI_RESET); 
     }
         
      
@@ -93,9 +122,28 @@ while(rs.next())
         ResultSet rs = s.executeQuery("select * from Student");
         
          while(rs.next())
-        System.out.println(String.format("ID: %s Name: %s Age: %s", rs.getInt(1), rs.getString(2), rs.getInt(3))); 
+        System.out.println(String.format("ID: "+ANSI_BLUE+"%s"+ANSI_RESET+" Name: "+ANSI_BLUE+"%s"+ANSI_RESET+" UserName: "+ANSI_BLUE+"%s"+ANSI_RESET+" Password: "+ANSI_BLUE+"%s"+ANSI_RESET+" Age: "+ANSI_BLUE+"%s"+ANSI_RESET+" Year: "+ANSI_BLUE+"%s"+ANSI_RESET+"", rs.getInt(1), rs.getString(2), rs.getString(3),rs.getString(4),rs.getInt(5),rs.getInt(6))); 
 
     }
+   
+  public ArrayList<String> getAllTeacherNames()
+   {
+       ArrayList<String> list = new ArrayList<>();
+       
+        try {
+            Statement s = con.createStatement();
+            ResultSet rs = s.executeQuery("select Name From Teacher");
+            
+            while(rs.next())
+            {
+                list.add(rs.getString(1));
+            }
+        } catch (SQLException ex) 
+        {
+            System.out.println(ex);
+        }
+        return list;
+   }
     
    public ArrayList<String> getAllStudentNames()
    {
@@ -116,9 +164,9 @@ while(rs.next())
         return list;
    }
     
-    public void addTo_Student(String Name,int Age,String Semester,int Year,String Courses,int Absent) throws ClassNotFoundException, SQLException
+    public void addTo_Student(String Name,String UserName,String Password,int Age,int Year) throws ClassNotFoundException, SQLException
     {
-       String INSERT_STUDENT = "INSERT INTO Student(Name,Age) VALUES(?,?)";
+       String INSERT_STUDENT = "INSERT INTO Student(Name,Username,Password,Age,Year) VALUES(?,?,?,?,?)";
         
          if(con == null)
         {
@@ -131,7 +179,10 @@ while(rs.next())
         PreparedStatement addition;
         addition = ConnectDB.con.prepareStatement(INSERT_STUDENT);
         addition.setString(1, Name);
-        addition.setInt(2, Age);
+        addition.setString(2, UserName);
+        addition.setString(3, Password);
+        addition.setInt(4, Age);
+        addition.setInt(5, Year);
         addition.execute();
         
         } catch (SQLException e) 
@@ -148,9 +199,10 @@ while(rs.next())
             
             while(rs.next())
             {
-                System.out.println(" ID: "+rs.getInt(1)+" Course Name: "+rs.getString(2)+" Section: "+rs.getInt(3)+" Teacher: "+rs.getString(4)+" Semester: "+rs.getString(5));
+                System.out.println(" ID: "+ANSI_BLUE+rs.getInt(1)+ANSI_RESET+" Course Name: "+ANSI_BLUE+rs.getString(2)+ANSI_RESET+" Section: "+ANSI_BLUE+rs.getInt(3)+ANSI_RESET+" Teacher: "+ANSI_BLUE+rs.getString(4)+ANSI_RESET+" Semester: "+ANSI_BLUE+rs.getString(5)+ANSI_RESET);
             }
-        } catch (SQLException ex) {
+        } catch (SQLException ex)
+        {
             System.out.println(ex);
         }
     }
@@ -180,7 +232,7 @@ while(rs.next())
     }
     }
     
-    public void getFrom_Attendence()
+    public void getFrom_Attendance()
     {
          try {
             Statement s = con.createStatement();
@@ -188,16 +240,17 @@ while(rs.next())
             
             while(rs.next())
             {
-                System.out.println(" ID: "+rs.getInt(1)+" Student_ID: "+rs.getInt(2)+" Course Name: "+rs.getString(3)+" Seciton: "+rs.getInt(4));
+                System.out.println(" ID: "+ANSI_BLUE+rs.getInt(1)+ANSI_RESET+" Student_ID: "+ANSI_BLUE+rs.getInt(2)+ANSI_RESET+" Course Name: "+ANSI_BLUE+rs.getString(3)+ANSI_RESET+" Section: "+ANSI_BLUE+rs.getInt(4)+ANSI_RESET+" Attendence: "+ANSI_BLUE+rs.getInt(5)+ANSI_RESET);
             }
-        } catch (SQLException ex) {
+        } catch (SQLException ex)
+        {
             System.out.println(ex);
         }
     }
     
-        public void addTo_Attendence(int Student_ID, String Name, int Section) throws ClassNotFoundException, SQLException
+        public void addTo_Attendance(int Student_ID, String Course, int Section,int Count) throws ClassNotFoundException, SQLException
     {
-         String INSERT_ATTENDANCE = "INSERT INTO Attendence(Student_ID,Course,Section) VALUES(?,?,?)";
+         String INSERT_ATTENDANCE = "INSERT INTO Attendance(Student_ID,Course,Section,Count) VALUES(?,?,?,?)";
          
           if(con == null)
         {
@@ -209,8 +262,9 @@ while(rs.next())
         PreparedStatement addition;
         addition = ConnectDB.con.prepareStatement(INSERT_ATTENDANCE);
         addition.setInt(1, Student_ID);
-        addition.setString(2, Name);
-        addition.setInt(3, Section);       
+        addition.setString(2, Course);
+        addition.setInt(3, Section);
+        addition.setInt(4, Count);
         addition.execute();
         
         } catch (SQLException e) 
@@ -227,7 +281,7 @@ while(rs.next())
             
             while(rs.next())
             {
-                System.out.println(" ID: "+rs.getInt(1)+" Sender: "+rs.getString(2)+" Reveiver: "+rs.getString(3)+" Message: "+rs.getString(4));
+                System.out.println(" ID: "+ANSI_BLUE+rs.getInt(1)+ANSI_RESET+" Sender: "+ANSI_BLUE+rs.getString(2)+ANSI_RESET+" Reveiver: "+ANSI_BLUE+rs.getString(3)+ANSI_RESET+" Message: "+ANSI_BLUE+rs.getString(4)+ANSI_RESET);
             }
         } catch (SQLException ex) {
             System.out.println(ex);
@@ -289,13 +343,8 @@ while(rs.next())
            getConnection();
         }
         
-         try {
-             /*
-        PreparedStatement begin;
-        begin = con.prepareStatement(".headers on");
-        begin.execute();    
-             */
-             
+         try 
+         {
         PreparedStatement showatr;
         showatr = con.prepareStatement("PRAGMA table_info("+tablename+");");
         showatr.execute();
@@ -305,8 +354,6 @@ while(rs.next())
            System.out.println(e);            
     }
     }
-    
-    
    
     public void renametable(String tablename , String new_name) throws SQLException, ClassNotFoundException
     {
@@ -427,9 +474,9 @@ while(rs.next())
          }
           
           try {
-          PreparedStatement displaytable;
-          displaytable = con.prepareStatement(""+a+"");
-          displaytable.execute();
+          PreparedStatement Terminal;
+          Terminal = con.prepareStatement(""+a+"");
+          Terminal.execute();
           } catch (SQLException e) 
         {
                     
