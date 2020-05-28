@@ -2,7 +2,6 @@ package se318;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
-import static se318.ConnectDB.Check_For_Password_Teacher;
 import static se318.Menus.Main_Menu;
 
 
@@ -14,11 +13,21 @@ public class Test
         
         db.getConnection();
         
-        //Main_Menu();
+        Main_Menu();
         
-        System.out.println(db.getData_Student("username1","password1"));
+        //System.out.println(ConnectDB.GivenCourses(1));
         
-        //System.out.println(db.getData_Teacher("username1","password1"));
+        //System.out.println(ConnectDB.Get_Attendance_Teacher(1));
+        
+        //System.out.println(ConnectDB.Total_Student());
+        
+        //ConnectDB.Increment_Absent(2);
+        
+        //System.out.println(ConnectDB.Get_All_Users());
+        
+        //System.out.println(ConnectDB.getData_Student("username1","password1"));
+        
+        //System.out.println(ConnectDB.getData_Teacher("username1","password1"));
         
         //System.out.println(ConnectDB.Check_For_Password("Admin","admin", "admin"));
         
@@ -46,7 +55,7 @@ public class Test
         
         //db.getFrom_Attendance();
         
-        //db.addTo_Messages("Cem Evrendilek", "Atahan Ekici", "Çalış artık aq öğrencisi!!1!!");
+        //db.addTo_Messages("Cem Evrendilek", "Atahan Ekici", "Merhabalar bu bir denemedir.");
         
         //db.getFrom_Messages();
         
@@ -57,6 +66,3 @@ public class Test
          //System.out.println(db.getAllStudentNames());
     }  
 }  
-
-
-

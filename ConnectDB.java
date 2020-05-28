@@ -27,7 +27,7 @@ public class ConnectDB
         //JOptionPane.showMessageDialog(null, "Connection Established");   
     }
     
-    public ArrayList<String> getData_Teacher(String Username,String Password)
+    public static ArrayList<String> getCredential_Teacher(String Username,String Password)
     {
         ArrayList<String> list = new ArrayList<>();
         
@@ -50,7 +50,7 @@ public class ConnectDB
          return list;
     }
     
-    public ArrayList<String> getData_Student(String Username,String Password)
+    public static ArrayList<String> getCredential_Student(String Username,String Password)
     {
          ArrayList<String> list = new ArrayList<>();
         
@@ -228,6 +228,73 @@ while(rs.next())
         }
         return list;
    }
+   
+   public static ArrayList<String> get_Attendance_Student(int ID)
+   {
+       ArrayList <String> list = new ArrayList<>();
+       
+        try
+      {
+           Statement s = con.createStatement();
+            ResultSet rs = s.executeQuery("SELECT Attendance.Course,Courses.Section,Attendance.Count FROM Attendance,Courses,Student WHERE Attendance.Course_ID = Courses.ID AND Student.ID = Attendance.Student_ID AND Student.ID = '"+ID+"';");
+            
+            while(rs.next())
+            {
+                list.add(rs.getString(1)+"(Section:"+rs.getString(2)+")");
+                list.add(rs.getString(3));
+            }
+      }catch(SQLException e)
+      {
+          System.out.println(e);
+      }
+       
+       return list;
+   }
+
+   public static ArrayList<String> GivenCourses(int ID)
+  {
+      ArrayList <String> list = new ArrayList<>();
+      
+      try
+      {
+           Statement s = con.createStatement();
+            ResultSet rs = s.executeQuery("SELECT Courses.ID,Courses.Name,Courses.Section FROM Courses,Teacher WHERE Courses.Teacher_ID = Teacher.ID AND Courses.Teacher_ID ='"+ID+"';");
+            
+            while(rs.next())
+            {
+                list.add("ID:"+rs.getString(1));
+                list.add(rs.getString(2)+" Section("+rs.getString(3)+")");
+            }
+            
+      }catch(SQLException e)
+      {
+          System.out.println(e);
+      }
+      
+      return list;
+  }
+   
+  public static ArrayList<String> EnrolledCourses(int ID)
+  {
+      ArrayList <String> list = new ArrayList<>();
+      
+      try
+      {
+           Statement s = con.createStatement();
+            ResultSet rs = s.executeQuery("SELECT Enrolled.Name FROM Enrolled,Student WHERE Enrolled.Student_ID = Student.ID AND Enrolled.Student_ID = '"+ID+"';");
+            
+            while(rs.next())
+            {
+                list.add(rs.getString(1));
+            }
+            
+      }catch(SQLException e)
+      {
+          System.out.println(e);
+      }
+      
+      return list;
+  }
     
     public void addTo_Student(String Name,String UserName,String Password,int Age,int Year) throws ClassNotFoundException, SQLException
     {
@@ -264,7 +331,7 @@ while(rs.next())
             
             while(rs.next())
             {
-                System.out.println(" ID: "+ANSI_BLUE+rs.getInt(1)+ANSI_RESET+" Course Name: "+ANSI_BLUE+rs.getString(2)+ANSI_RESET+" Section: "+ANSI_BLUE+rs.getInt(3)+ANSI_RESET+" Teacher: "+ANSI_BLUE+rs.getString(4)+ANSI_RESET+" Semester: "+ANSI_BLUE+rs.getString(5)+ANSI_RESET);
+                System.out.println(" ID: "+ANSI_BLUE+rs.getInt(1)+ANSI_RESET+" Teacher ID: "+ANSI_BLUE+rs.getInt(2)+ANSI_RESET+" Course Name: "+ANSI_BLUE+rs.getString(3)+ANSI_RESET+" Section: "+ANSI_BLUE+rs.getInt(4)+ANSI_RESET+" Semester: "+ANSI_BLUE+rs.getString(5)+ANSI_RESET);
             }
         } catch (SQLException ex)
         {
@@ -272,7 +339,7 @@ while(rs.next())
         }
     }
     
-    public void addTo_Courses(String Name, int Section, String Teacher, String Semester) throws ClassNotFoundException, SQLException
+    public void addTo_Courses(int Teacher_ID,String Course_Name, String Teacher,int Section, String Semester) throws ClassNotFoundException, SQLException
     {
          String INSERT_COURSES = "INSERT INTO Courses(Name,Section,Teacher,Semester) VALUES(?,?,?,?)";
          
@@ -285,9 +352,9 @@ while(rs.next())
         {     
         PreparedStatement addition;
         addition = ConnectDB.con.prepareStatement(INSERT_COURSES);
-        addition.setString(1, Name);
-        addition.setInt(2, Section);
-        addition.setString(3, Teacher);
+        addition.setInt(1, Teacher_ID);
+        addition.setString(2, Course_Name);
+        addition.setInt(3, Section);
         addition.setString(4, Semester);
         addition.execute();
         
@@ -353,14 +420,142 @@ while(rs.next())
         }
     }
     
-            public void addTo_Messages(String Sender, String Receiver, String Message) throws ClassNotFoundException, SQLException
+    public static int Total_Student()
+    {
+        int i = 1;
+        
+        try
+        {
+        Statement s = con.createStatement();
+        ResultSet rs = s.executeQuery("select * from Messages");
+        
+        while(rs.next())
+        {
+            ++i;
+        }
+        return i;
+        
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }
+        return i-1;
+    }
+    
+    public static void Increment_Absent(int ID,int Course)
+    {
+         String UPDATE_Attendance = "UPDATE Attendance SET Count = COUNT + 1 WHERE Attendance.Student_ID = ? AND Attendance.Course_ID = ? ;";
+         
+         try
+        {
+            PreparedStatement addition;
+            addition = ConnectDB.con.prepareStatement(UPDATE_Attendance);
+            addition.setInt(1, ID);
+            addition.setInt(2, Course);
+            addition.executeUpdate();  
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }
+    }
+    
+    public static void Update_Attendance(int value,int Course_ID,int Student_ID)
+    {
+        String UPDATE_Attendance_2 = "UPDATE Attendance SET Count = ? WHERE Attendance.Course_ID = ? AND Attendance.Student_ID = ?;";
+        try
+        {
+            PreparedStatement addition;
+            addition = ConnectDB.con.prepareStatement(UPDATE_Attendance_2);
+            addition.setInt(1, value);
+            addition.setInt(2, Course_ID);
+            addition.setInt(3, Student_ID);
+            addition.executeUpdate();  
+            
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }
+    }
+    
+    public static ArrayList<String> Get_Attendance_Teacher(int ID)
+    {
+        ArrayList<String> list = new ArrayList<>();
+        
+        try
+        {
+            Statement s = con.createStatement();
+            ResultSet rs = s.executeQuery("SELECT DISTINCT Attendance.Student_ID,Student.Name,Attendance.Course,Attendance.Count FROM Attendance,Teacher,Courses,Student WHERE Teacher.ID = Courses.Teacher_ID AND Student.ID = Attendance.Student_ID AND Teacher.ID = '"+ID+"';");
+            
+            while(rs.next())
+            {
+                list.add(rs.getString(1));
+                list.add(rs.getString(2));
+                list.add(rs.getString(3));
+                list.add(rs.getString(4));
+            }
+            
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }
+        
+        return list;
+    }
+    
+    public static ArrayList<String> Get_Messages(String Name)
+    {
+        ArrayList<String> list = new ArrayList<>();
+        
+        try
+        {
+            Statement s = con.createStatement();
+            ResultSet rs = s.executeQuery("SELECT Messages.Sender, Messages.Message FROM Messages WHERE Messages.Receiver = '"+Name+"';");
+            
+            while(rs.next())
+            {
+               list.add(rs.getString(1)+" => "+rs.getString(2));
+            }
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }
+        return list;
+    }
+    
+    public static ArrayList<String> Get_All_Users()
+    {
+        ArrayList<String> list = new ArrayList<>();
+        int counter = 1;
+        
+        try
+        {
+            Statement s = con.createStatement();
+            ResultSet rs = s.executeQuery("SELECT DISTINCT Teacher.Name FROM Teacher");
+            
+            while(rs.next())
+            {
+               list.add(""+counter+") "+rs.getString(1));
+               counter++;
+            }
+            
+            Statement s_2 = con.createStatement();
+            ResultSet rs_2 = s.executeQuery("SELECT DISTINCT Student.Name FROM Student");
+            
+            while(rs_2.next())
+            {
+               list.add(rs.getString(1));
+            }
+            
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }
+        return list;
+    }
+    
+public static void addTo_Messages(String Sender, String Receiver, String Message) throws ClassNotFoundException, SQLException
     {
          String INSERT_MESSAGES = "INSERT INTO Messages(Sender,Receiver,Message) VALUES(?,?,?)";
-         
-          if(con == null)
-        {
-           getConnection();
-         }
 
           try 
         {     
