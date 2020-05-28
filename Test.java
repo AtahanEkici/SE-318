@@ -1,5 +1,6 @@
 package se318;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import static se318.ConnectDB.Check_For_Password_Teacher;
 import static se318.Menus.Main_Menu;
@@ -7,16 +8,26 @@ import static se318.Menus.Main_Menu;
 
 public class Test 
 {
-     public static void main(String[] args) throws ClassNotFoundException, SQLException 
+     public static void main(String[] args) throws ClassNotFoundException, SQLException, UnsupportedEncodingException 
     {
         ConnectDB db = new ConnectDB();
         
         db.getConnection();
         
-        System.out.println(ConnectDB.Check_For_Password_Student("username","password"));
-        
         //Main_Menu();
         
+        System.out.println(db.getData_Student("username1","password1"));
+        
+        //System.out.println(db.getData_Teacher("username1","password1"));
+        
+        //System.out.println(ConnectDB.Check_For_Password("Admin","admin", "admin"));
+        
+        //System.out.println(ConnectDB.Check_For_Password("Teacher","", ""));
+        
+        //System.out.println(ConnectDB.Check_For_Password("Student","username2","password2"));
+        
+        //System.out.println(ConnectDB.Check_For_Password_Student("username1","password1"));
+
         //System.out.println(db.Check_For_Password_Admin("admin", "admin"));
         
         //db.getFrom_Student();

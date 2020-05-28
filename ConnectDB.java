@@ -27,10 +27,75 @@ public class ConnectDB
         //JOptionPane.showMessageDialog(null, "Connection Established");   
     }
     
+    public ArrayList<String> getData_Teacher(String Username,String Password)
+    {
+        ArrayList<String> list = new ArrayList<>();
+        
+         try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM Teacher WHERE username = '"+Username+"' AND password = '"+Password+"';");
+            
+            while(rs.next())
+            {
+                list.add(rs.getString(1));
+                list.add(rs.getString(2));
+                list.add(rs.getString(3));
+                list.add(rs.getString(4));
+            }
+            
+    }catch(SQLException e)
+    {
+        System.out.println(e);
+    }
+         return list;
+    }
+    
+    public ArrayList<String> getData_Student(String Username,String Password)
+    {
+         ArrayList<String> list = new ArrayList<>();
+        
+         try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM Student WHERE username = '"+Username+"' AND password = '"+Password+"';");
+            
+            while(rs.next())
+            {
+                list.add(rs.getString(1));
+                list.add(rs.getString(2));
+                list.add(rs.getString(3));
+                list.add(rs.getString(4));
+                list.add(rs.getString(5)); 
+                list.add(rs.getString(6)); 
+            }
+    }catch(SQLException e)
+    {
+        System.out.println(e);
+    }
+         return list;
+    }
+    
+    
+    public static Boolean Check_For_Password(String Tablename,String Username,String Password)
+    {
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("SELECT EXISTS(SELECT username,password FROM "+Tablename+" WHERE username = '"+Username+"' AND password = '"+Password+"');");
+            
+            while(rs.next())
+            {
+                return (rs.getBoolean(1));
+            }
+            return null;
+        } catch (SQLException ex) {
+            Logger.getLogger(ConnectDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
      public static Boolean Check_For_Password_Student(String Username,String Password) throws SQLException
     {
             Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery("SELECT EXISTS(SELECT Username,Password FROM Student WHERE Username = '"+Username+"' AND Password = '"+Password+"');");
+            ResultSet rs = st.executeQuery("SELECT EXISTS(SELECT username,password FROM Student WHERE username = '"+Username+"' AND password = '"+Password+"');");
             
             while(rs.next())
             {
