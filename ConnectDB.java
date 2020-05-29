@@ -146,7 +146,7 @@ public class ConnectDB
     }      
    }
     
-        public void getFrom_Teacher() throws SQLException
+        public static void getFrom_Teacher() throws SQLException
     {
          Statement s = con.createStatement();
         ResultSet rs = s.executeQuery("select * from Teacher");
@@ -157,14 +157,9 @@ while(rs.next())
         
      
 
-    public void addTo_Teacher(String Name,String username,String password) throws ClassNotFoundException, SQLException
+    public static void addTo_Teacher(String Name,String username,String password) throws ClassNotFoundException, SQLException
     {
          String INSERT_TEACHER = "INSERT INTO Teacher(Name,username,password) VALUES(?,?,?)";
-        
-        if(con == null)
-        {
-           getConnection();
-         }
         
          try 
         {
@@ -181,7 +176,7 @@ while(rs.next())
     }   
     }
               
-   public void getFrom_Student() throws SQLException
+   public static void getFrom_Student() throws SQLException
     {
         Statement s = con.createStatement();
         ResultSet rs = s.executeQuery("select * from Student");
@@ -296,14 +291,9 @@ while(rs.next())
       return list;
   }
     
-    public void addTo_Student(String Name,String UserName,String Password,int Age,int Year) throws ClassNotFoundException, SQLException
+    public static void addTo_Student(String Name,String UserName,String Password,int Age,int Year) throws ClassNotFoundException, SQLException
     {
        String INSERT_STUDENT = "INSERT INTO Student(Name,Username,Password,Age,Year) VALUES(?,?,?,?,?)";
-        
-         if(con == null)
-        {
-           getConnection();
-         }
 
           try 
         {
@@ -323,7 +313,7 @@ while(rs.next())
     }
     }
     
-    public void getFrom_Courses()
+    public static void getFrom_Courses()
     {
         try {
             Statement s = con.createStatement();
@@ -364,7 +354,7 @@ while(rs.next())
     }
     }
     
-    public void getFrom_Attendance()
+    public static void getFrom_Attendance()
     {
          try {
             Statement s = con.createStatement();
@@ -405,7 +395,7 @@ while(rs.next())
     }
     }
         
-    public void getFrom_Messages()
+    public static void getFrom_Messages()
     {
          try {
             Statement s = con.createStatement();
@@ -543,7 +533,8 @@ while(rs.next())
             
             while(rs_2.next())
             {
-               list.add(rs.getString(1));
+               list.add(""+counter+") "+rs.getString(1));
+               counter++;
             }
             
         }catch(SQLException e)

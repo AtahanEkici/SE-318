@@ -39,25 +39,25 @@ public class Test
 
         //System.out.println(db.Check_For_Password_Admin("admin", "admin"));
         
-        //db.getFrom_Student();
+        //ConnectDB.getFrom_Student();
 
-        //db.addTo_Student("Deneme", "username", "password",2 , 4);
+        //ConnectDB.addTo_Student("Deneme", "username", "password",2 , 4);
         
-        //db.addTo_Teacher("Serhat Uzunbayır", "suzunbayır", "Herkese100");
+        //ConnectDB.addTo_Teacher("Serhat Uzunbayır", "suzunbayır", "Herkese100");
         
-        //db.getFrom_Teacher();
+        //ConnectDB.getFrom_Teacher();
         
         //db.addTo_Courses("SE318", 1, "Kaan Kurtel", "Summer");
         
-        //db.getFrom_Courses();
+        //ConnectDB.getFrom_Courses();
 
         //db.addTo_Attendance(1, "SE318", 2, 0);
         
-        //db.getFrom_Attendance();
+        //ConnectDB.getFrom_Attendance();
         
         //db.addTo_Messages("Cem Evrendilek", "Atahan Ekici", "Merhabalar bu bir denemedir.");
         
-        //db.getFrom_Messages();
+        //ConnectDB.getFrom_Messages();
         
         //System.out.println(db.getAllTeacherNames());
         

@@ -3,6 +3,7 @@ package se318;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Scanner;
 import static se318.ConnectDB.Check_For_Password;
 import static se318.ConnectDB.EnrolledCourses;
@@ -68,7 +69,7 @@ public class Menus
   }
  }
     
-    public static void Check_Admin() throws SQLException
+    public static void Check_Admin() throws SQLException, ClassNotFoundException
     {
         String Username = null;
         String Password = null;
@@ -98,16 +99,20 @@ public class Menus
     }
        int secim_2 = 0;
            
-      while(secim_2 != 5)  
+      while(secim_2 != 8)  
       {
-           String s = "\n Press 1 to List All Students\n"
-                   + "Press 2 to Delete Student\n"
-                   //+ "Press 3 to"
-                   + " Press 5 to Quit";
+        String s = "\nPress 1 for Listing All Students\n"
+                   + "Press 2 for Listing All Teachers\n"
+                   + "Press 3 for Listing All Courses\n"
+                   + "Press 4 for Listing All Attendances\n"
+                   + "Press 5 for Listing All Messages\n"
+                   + "Press 6 for Adding a Student\n"
+                   + "Press 7 for Adding a Teacher\n"
+                   + "Press 8 to Quit";
            
            System.out.println(s);
            
-           System.out.print("Your Choice: ");
+           System.out.print("\nYour Choice: ");
     
     Scanner secim_s_2 = new Scanner(System.in);
     
@@ -123,20 +128,73 @@ public class Menus
         switch(secim_2)
         {
             case 1:
+                ConnectDB.getFrom_Student();
                 break;
                 
             case 2:
-                
+                ConnectDB.getFrom_Teacher();
                 break;
                 
             case 3:
+                ConnectDB.getFrom_Courses();
+                break;
+                
+            case 4:
+               ConnectDB.getFrom_Attendance();
+                break;
+                
+            case 5:
+                ConnectDB.getFrom_Messages();
+                break;
+                
+            case 6:
+                System.out.print("Please Provide A Name: ");
+                Scanner name_scanner = new Scanner(System.in);
+                String Name = name_scanner.nextLine();
+                
+                System.out.print("Please Provide A Username: ");
+                Scanner username_scanner = new Scanner(System.in);
+                String username = username_scanner.nextLine();
+                
+                System.out.print("Please Provide A Password: ");
+                Scanner password_scanner = new Scanner(System.in);
+                String pass = password_scanner.nextLine();
+                
+                System.out.print("Please Provide A Age: ");
+                Scanner Age_scanner = new Scanner(System.in);
+                String Age = Age_scanner.nextLine();
+                int age = Integer.parseInt(Age);
+                
+                int year = Calendar.getInstance().get(Calendar.YEAR);
+                
+                ConnectDB.addTo_Student(Name, username, pass, age, year);
+                
+                System.out.println("\nSuccesfully Created new Student\n");
                 
                 break;
                 
+            case 7:
+                System.out.print("Please Provide A Name: ");
+                Scanner Name_scanner = new Scanner(System.in);
+                String Teacher_Name = Name_scanner.nextLine();
+                
+                System.out.print("Please Provide A Username: ");
+                Scanner Username_teacher_scan = new Scanner(System.in);
+                String Username_Teacher = Username_teacher_scan.nextLine();
+                
+                System.out.print("Please Provide A Password: ");
+                Scanner Password_teacher_scanner = new Scanner(System.in);
+                String Password_teacher = Password_teacher_scanner.nextLine();
+                
+                ConnectDB.addTo_Teacher(Teacher_Name, Username_Teacher, Password_teacher);
+                
+                System.out.println("\nSuccessfully Added new Teacher\n");
+                break;
+                
             default:
-                if(secim_2 == 5)
+                if(secim_2 == 8)
                 {
-                    System.out.println("Returning to Main Menu\n");
+                    System.out.println("\nReturning to Main Menu\n");
                 }
                 else
                 {
@@ -313,7 +371,7 @@ public class Menus
             default:
                 if(secim_2 == 4)
                 {
-                    System.out.println("Returning to Main Menu\n");
+                    System.out.println("\nReturning to Main Menu\n");
                 }
                 else
                 {
@@ -429,7 +487,7 @@ public static void Check_Student() throws SQLException, ClassNotFoundException
             default:
                 if(secim_2 == 4)
                 {
-                    System.out.println("Returning to Main Menu\n");
+                    System.out.println("\nReturning to Main Menu\n");
                 }
                 else
                 {
